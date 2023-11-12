@@ -5,12 +5,19 @@ public class Profile: Identifiable, Codable, Hashable {
     public let name: String
     public let url: URL?
     public let nodes: [DERNode]
+    public let semanticNodes: [SemanticNode]
 
-    public init(name: String = "Untitled", url: URL? = nil, nodes: [DERNode] = []) {
+    public init(
+        name: String = "Untitled",
+        url: URL? = nil,
+        nodes: [DERNode] = [],
+        semanticNodes: [SemanticNode] = []
+    ) {
         self.id = UUID()
         self.name = name
         self.url = url
         self.nodes = nodes
+        self.semanticNodes = semanticNodes
     }
 
     public func hash(into hasher: inout Hasher) {
@@ -29,6 +36,7 @@ public class Profile: Identifiable, Codable, Hashable {
         case name
         case url
         case nodes
+        case semanticNodes
     }
 
     required public init(from decoder: Decoder) throws {
@@ -37,6 +45,7 @@ public class Profile: Identifiable, Codable, Hashable {
         name = try container.decode(String.self, forKey: .name)
         url = try container.decodeIfPresent(URL.self, forKey: .url)
         nodes = try container.decode([DERNode].self, forKey: .nodes)
+        semanticNodes = try container.decode([SemanticNode].self, forKey: .semanticNodes)
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -45,5 +54,6 @@ public class Profile: Identifiable, Codable, Hashable {
         try container.encode(name, forKey: .name)
         try container.encodeIfPresent(url, forKey: .url)
         try container.encode(nodes, forKey: .nodes)
+        try container.encode(semanticNodes, forKey: .semanticNodes)
     }
 }

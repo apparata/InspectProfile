@@ -10,10 +10,12 @@ public class InspectProfile {
         let data = try Data(contentsOf: path.url)
         let parser = DERParser(data: data)
         let nodes = try parser.parse()
+        let semanticNodes = try Semantics().processNodes(nodes)
         return Profile(
             name: path.url.deletingPathExtension().lastPathComponent,
             url: path.url,
-            nodes: nodes
+            nodes: nodes,
+            semanticNodes: semanticNodes
         )
 	}
 
@@ -21,10 +23,12 @@ public class InspectProfile {
         let data = try Data(contentsOf: url)
         let parser = DERParser(data: data)
         let nodes = try parser.parse()
+        let semanticNodes = try Semantics().processNodes(nodes)
         return Profile(
             name: url.deletingPathExtension().lastPathComponent,
             url: url,
-            nodes: nodes
+            nodes: nodes,
+            semanticNodes: semanticNodes
         )
     }
 }

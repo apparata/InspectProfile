@@ -9,6 +9,8 @@ struct ProvisioningProfiles: View {
 
     @State private var selectedNode: DERNode?
 
+    @State private var selectedSemanticNode: SemanticNode?
+
     @State private var selectedInspectorPane: Int = 0
 
     @State private var isPresentingImporter: Bool = false
@@ -87,20 +89,11 @@ struct ProvisioningProfiles: View {
 
         } detail: {
             if let profile = selectedProfile {
-                MobileProvisionOutline(profile: profile, selectedNode: $selectedNode)
-                    .toolbar {
-                        ToolbarItem(placement: .navigation) {
-                            if let url = profile.url {
-                                Button {
-                                    NSWorkspace.shared.open(url.deletingLastPathComponent())
-                                } label: {
-                                    Label("Open in Finder", systemImage: "folder")
-                                }
-                            } else {
-                                Image(systemName: "doc.badge.gearshape")
-                            }
-                        }
-                    }
+                MobileProvisionOutline(
+                    profile: profile,
+                    selectedNode: $selectedNode,
+                    selectedSemanticNode: $selectedSemanticNode
+                )
             }
         }
         .inspector(isPresented: .constant(true)) {
