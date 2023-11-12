@@ -1,0 +1,32 @@
+{
+  "pins" : [
+    {
+      "identity" : "binarydatakit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apparata/BinaryDataKit",
+      "state" : {
+        "revision" : "6375e9a79571ad066ff13e14634cc9c1e3f7e3da",
+        "version" : "1.0.3"
+      }
+    },
+    {
+      "identity" : "swift-argument-parser",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-argument-parser",
+      "state" : {
+        "revision" : "fee6933f37fde9a5e12a1e4aeaa93fe60116ff2a",
+        "version" : "1.2.2"
+      }
+    },
+    {
+      "identity" : "systemkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apparata/SystemKit",
+      "state" : {
+        "revision" : "e3a58668b578d2bc6d8ea2e44f43381cdb9a4736",
+        "version" : "1.5.0"
+      }
+    }
+  ],
+  "version" : 2
+}
