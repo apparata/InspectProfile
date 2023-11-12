@@ -11,46 +11,96 @@ struct ProvisioningProfiles: View {
 
     @State private var selectedInspectorPane: Int = 0
 
+    @State private var isPresentingImporter: Bool = false
+
     init() {
         //
     }
 
     var body: some View {
         NavigationSplitView {
-            if let profiles = profilesModel.profiles?.profiles {
-                List(selection: $selectedProfile) {
-                    Section("Profiles") {
-                        ForEach(profiles) { profile in
-                            HStack(spacing: 0) {
-                                Image(systemName: "doc.badge.gearshape")
-                                    .fontWeight(.semibold)
-                                    .foregroundStyle(.secondary)
-                                    .padding(.leading, 4)
-                                    .padding(.trailing, 8)
-                                Text(profile.name)
+            VStack {
+                if let profiles = profilesModel.profiles?.profiles {
+                    List(selection: $selectedProfile) {
+                        Section("Profiles") {
+                            ForEach(profiles) { profile in
+                                profileEntry(profile)
                             }
-                            .tag(profile)
                         }
                     }
-                }
-                .listStyle(.sidebar)
-                .safeAreaInset(edge: .bottom) {
-                    DropView(model: profilesModel)
-                }
-            } else {
-                VStack {
-                    Spacer()
-                    Text("No profiles")
-                        .foregroundStyle(.secondary)
-                    Spacer()
-                }
-                .safeAreaInset(edge: .bottom) {
-                    DropView(model: profilesModel)
+                    .listStyle(.sidebar)
+                    .safeAreaInset(edge: .bottom) {
+                        DropView(model: profilesModel)
+                    }
+                } else {
+                    VStack {
+                        Spacer()
+                        Text("No profiles")
+                            .foregroundStyle(.secondary)
+                        Spacer()
+                    }
+                    .safeAreaInset(edge: .bottom) {
+                        DropView(model: profilesModel)
+                    }
                 }
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .onChange(of: selectedProfile) { _, profile in
+                selectedNode = nil
+            }
+            .toolbar {
+                ToolbarItem {
+                    Spacer()
+                }
+                ToolbarItem {
+                    Button {
+                        profilesModel.deleteAllProfiles()
+                        selectedProfile = nil
+                        selectedNode = nil
+                    } label: {
+                        Label("Remove all", systemImage: "trash")
+                    }
+                }
+                ToolbarItem {
+                    Button {
+                        isPresentingImporter = true
+                    } label: {
+                        Label("Import...", systemImage: "plus")
+                    }
+                }
+            }
+            .fileImporter(
+                isPresented: $isPresentingImporter,
+                allowedContentTypes: [.data],
+                allowsMultipleSelection: true) { result in
+                    switch result {
+                    case .success(let urls):
+                        do {
+                            try profilesModel.parseProfiles(at: urls)
+                        } catch {
+                            dump(error)
+                        }
+                    case .failure(let error):
+                        dump(error)
+                    }
+                }
+
         } detail: {
             if let profile = selectedProfile {
                 MobileProvisionOutline(profile: profile, selectedNode: $selectedNode)
+                    .toolbar {
+                        ToolbarItem(placement: .navigation) {
+                            if let url = profile.url {
+                                Button {
+                                    NSWorkspace.shared.open(url.deletingLastPathComponent())
+                                } label: {
+                                    Label("Open in Finder", systemImage: "folder")
+                                }
+                            } else {
+                                Image(systemName: "doc.badge.gearshape")
+                            }
+                        }
+                    }
             }
         }
         .inspector(isPresented: .constant(true)) {
@@ -126,6 +176,29 @@ struct ProvisioningProfiles: View {
                 ToolbarItem {
                     Spacer()
                 }
+            }
+        }
+    }
+
+    @ViewBuilder private func profileEntry(_ profile: Profile) -> some View {
+        HStack(spacing: 0) {
+            Image(systemName: profile.url?.pathExtension == "mobileprovision" ? "doc.badge.gearshape" : "doc")
+                .fontWeight(.semibold)
+                .foregroundStyle(.secondary)
+                .padding(.leading, 4)
+                .padding(.trailing, 8)
+            Text(profile.name)
+        }
+        .tag(profile)
+        .contextMenu {
+            Button {
+                profilesModel.deleteProfile(profile)
+                if profile == selectedProfile {
+                    selectedProfile = nil
+                    selectedNode = nil
+                }
+            } label: {
+                Label("Remove", systemImage: "trash")
             }
         }
     }
