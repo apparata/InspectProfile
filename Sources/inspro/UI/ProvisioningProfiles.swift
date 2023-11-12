@@ -15,6 +15,8 @@ struct ProvisioningProfiles: View {
 
     @State private var isPresentingImporter: Bool = false
 
+    @State private var outlineMode: OutlineMode = .raw
+
     init() {
         //
     }
@@ -92,13 +94,14 @@ struct ProvisioningProfiles: View {
                 MobileProvisionOutline(
                     profile: profile,
                     selectedNode: $selectedNode,
-                    selectedSemanticNode: $selectedSemanticNode
+                    selectedSemanticNode: $selectedSemanticNode,
+                    outlineMode: $outlineMode
                 )
             }
         }
         .inspector(isPresented: .constant(true)) {
             VStack(spacing: 0) {
-                if let node = selectedNode {
+                if outlineMode == .raw, let node = selectedNode {
                     switch node {
                     case .contextDefinedConstructed(let constructed):
                         ContextDefinedConstructedPane(
@@ -138,6 +141,10 @@ struct ProvisioningProfiles: View {
                     case .unknown:
                         UnknownPane(node: node)
                     }
+                } else if outlineMode == .semantic, let node = selectedSemanticNode {
+                    Text(node.type)
+                } else {
+                    EmptyView()
                 }
             }
             .inspectorColumnWidth(min: 324, ideal: 324, max: 324)

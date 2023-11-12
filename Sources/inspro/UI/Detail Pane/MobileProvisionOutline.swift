@@ -9,7 +9,7 @@ struct MobileProvisionOutline: View {
 
     @Binding var selectedSemanticNode: SemanticNode?
 
-    @State private var outlineMode: OutlineMode = .raw
+    @Binding var outlineMode: OutlineMode
 
     var body: some View {
         VStack {
@@ -99,7 +99,7 @@ struct MobileProvisionOutline: View {
 
 }
 
-private enum OutlineMode: Identifiable, Hashable {
+enum OutlineMode: Identifiable, Hashable {
     case raw
     case semantic
 
@@ -110,6 +110,7 @@ private enum OutlineMode: Identifiable, Hashable {
     MobileProvisionOutline(
         profile: Profile(),
         selectedNode: .constant(nil),
-        selectedSemanticNode: .constant(nil)
+        selectedSemanticNode: .constant(nil),
+        outlineMode: .constant(.raw)
     )
 }
