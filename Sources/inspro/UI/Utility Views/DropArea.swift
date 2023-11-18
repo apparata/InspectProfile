@@ -1,7 +1,7 @@
 import SwiftUI
 import InspectProfile
 
-struct DropView: View {
+struct DropArea: View {
 
     @Bindable var model: ProfilesModel
 

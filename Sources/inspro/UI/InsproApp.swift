@@ -7,6 +7,8 @@ struct InsproApp: App {
     // swiftlint:disable:next weak_delegate
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
+    @State var textZoom: CGFloat = 1
+
     init() {
         DispatchQueue.main.async {
             NSApp.setActivationPolicy(.regular)
@@ -23,10 +25,13 @@ struct InsproApp: App {
                        minHeight: 300, maxHeight: .infinity)
         }
         .windowResizability(.automatic)
+        .commands {
+            AppCommands()
+        }
 
         WindowGroup(for: Data.self) { data in
             if let data = data.wrappedValue {
-                HexDumpView(data: data)
+                HexDump(data: data)
                     .frame(minWidth: 562, maxWidth: 562,
                            minHeight: 600, maxHeight: .infinity)
                     .navigationTitle("\(data.count) bytes")

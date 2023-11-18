@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct HexDumpView: View {
+struct HexDump: View {
 
     let data: Data
 

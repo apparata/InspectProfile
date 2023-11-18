@@ -11,6 +11,8 @@ struct MobileProvisionOutline: View {
 
     @Binding var outlineMode: OutlineMode
 
+    @AppStorage(\AppSettings.textScale) private var textScale
+
     var body: some View {
         VStack {
             switch outlineMode {
@@ -34,6 +36,7 @@ struct MobileProvisionOutline: View {
                 .scrollContentBackground(.hidden)
             }
         }
+        .environment(\.dynamicTypeSize, .xxLarge)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .navigationTitle(profile.url?.lastPathComponent ?? profile.name)
         .toolbar {
@@ -62,16 +65,18 @@ struct MobileProvisionOutline: View {
     @ViewBuilder private func entry(for node: DERNode) -> some View {
         HStack(spacing: 0) {
             Image(systemName: node.systemIcon)
+                .font(.system(size: round(13 * textScale)))
                 .fontWeight(.medium)
                 .foregroundStyle(node.iconColor)
                 .padding(.leading, 2)
                 .padding(.trailing, 4)
             Text(node.type)
-                .font(.title3)
+                .font(.system(size: round(15 * textScale)))
                 .fontWeight(.medium)
                 .foregroundStyle(.primary)
                 .padding(.trailing, 16)
             Text(.init(node.description))
+                .font(.system(size: round(13 * textScale)))
                 .foregroundStyle(.secondary)
                 .opacity(0.6)
         }
@@ -81,16 +86,18 @@ struct MobileProvisionOutline: View {
     @ViewBuilder private func entry(for node: SemanticNode) -> some View {
         HStack(spacing: 0) {
             Image(systemName: node.systemIcon)
+                .font(.system(size: round(13 * textScale)))
                 .fontWeight(.medium)
                 .foregroundStyle(node.iconColor)
                 .padding(.leading, 2)
                 .padding(.trailing, 4)
             Text(node.type)
-                .font(.title3)
+                .font(.system(size: round(15 * textScale)))
                 .fontWeight(.medium)
                 .foregroundStyle(.primary)
                 .padding(.trailing, 16)
             Text(.init(node.description))
+                .font(.system(size: round(13 * textScale)))
                 .foregroundStyle(.secondary)
                 .opacity(0.6)
         }
@@ -104,13 +111,4 @@ enum OutlineMode: Identifiable, Hashable {
     case semantic
 
     var id: Self { self }
-}
-
-#Preview {
-    MobileProvisionOutline(
-        profile: Profile(),
-        selectedNode: .constant(nil),
-        selectedSemanticNode: .constant(nil),
-        outlineMode: .constant(.raw)
-    )
 }

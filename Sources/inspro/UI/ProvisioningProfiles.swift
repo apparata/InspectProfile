@@ -34,7 +34,7 @@ struct ProvisioningProfiles: View {
                     }
                     .listStyle(.sidebar)
                     .safeAreaInset(edge: .bottom) {
-                        DropView(model: profilesModel)
+                        DropArea(model: profilesModel)
                     }
                 } else {
                     VStack {
@@ -44,7 +44,7 @@ struct ProvisioningProfiles: View {
                         Spacer()
                     }
                     .safeAreaInset(edge: .bottom) {
-                        DropView(model: profilesModel)
+                        DropArea(model: profilesModel)
                     }
                 }
             }
@@ -263,8 +263,4 @@ struct NodePaneHeader: View {
             Divider()
         }
     }
-}
-
-#Preview {
-    ProvisioningProfiles()
 }
