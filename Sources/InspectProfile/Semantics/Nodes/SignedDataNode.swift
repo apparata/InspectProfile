@@ -2,7 +2,12 @@ import Foundation
 
 public struct SignedDataNode: SemanticNodeType {
     
-    public static let objectID: DERObjectID = "1.2.840.113549.1.7.2"
+    public static let objectID = DERObjectID(
+        "1.2.840.113549.1.7.2",
+        name: "PKCS#7: Signed Data"
+    )
+
+    public static let objectName = "PKCS#7: Signed Data"
 
     public var id: UUID = UUID()
 
