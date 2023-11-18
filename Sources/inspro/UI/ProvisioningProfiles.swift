@@ -11,7 +11,7 @@ struct ProvisioningProfiles: View {
 
     @State private var selectedSemanticNode: SemanticNode?
 
-    @State private var selectedInspectorPane: Int = 0
+    @State private var inspectorMode: InspectorMode = .properties
 
     @State private var isPresentingImporter: Bool = false
 
@@ -101,50 +101,18 @@ struct ProvisioningProfiles: View {
         }
         .inspector(isPresented: .constant(true)) {
             VStack(spacing: 0) {
-                if outlineMode == .raw, let node = selectedNode {
-                    switch node {
-                    case .contextDefinedConstructed(let constructed):
-                        ContextDefinedConstructedPane(
-                            node: node,
-                            contextDefinedConstructed: constructed
-                        )
-                    case .contextDefinedPrimitive(let primitive):
-                        ContextDefinedPrimitivePane(
-                            node: node,
-                            contextDefinedPrimitive: primitive
-                        )
-
-                    case .sequence(let sequence):
-                        SequencePane(node: node, sequence: sequence)
-                    case .set(let set):
-                        SetPane(node: node, set: set)
-
-                    case .bitString(let bitString):
-                        BitStringPane(node: node, bitString: bitString)
-                    case .boolean(let value):
-                        BooleanPane(node: node, boolean: value)
-                    case .integer(let value):
-                        IntegerPane(node: node, integer: value)
-                    case .null(let null):
-                        NullPane(node: node, null: null)
-                    case .objectIdentifier(let objectIdentifier):
-                        ObjectIdentifierPane(node: node, objectIdentifier: objectIdentifier)
-                    case .octetString(let octetString):
-                        OctetStringPane(node: node, octetString: octetString)
-                    case .printableString(let printableString):
-                        PrintableStringPane(node: node, printableString: printableString)
-                    case .utcTime(let utcTime):
-                        UTCTimePane(node: node, utcTime: utcTime)
-                    case .utf8String(let utf8String):
-                        UTF8StringPane(node: node, utf8String: utf8String)
-
-                    case .unknown:
-                        UnknownPane(node: node)
+                if outlineMode == .raw {
+                    if let node = selectedNode {
+                        if inspectorMode == .properties {
+                            inspectProperties(of: node)
+                        } else if inspectorMode == .data, let profile = selectedProfile {
+                            inspectData(of: node, data: profile.dataForNode(node))
+                        }
                     }
-                } else if outlineMode == .semantic, let node = selectedSemanticNode {
-                    Text(node.type)
-                } else {
-                    EmptyView()
+                } else if outlineMode == .semantic {
+                    if let node = selectedSemanticNode {
+                        inspectSemanticProperties(of: node)
+                    }
                 }
             }
             .inspectorColumnWidth(min: 324, ideal: 324, max: 324)
@@ -154,22 +122,24 @@ struct ProvisioningProfiles: View {
                     Spacer()
                 }
                 ToolbarItem {
-                    HStack {
-                        Button {
-                            selectedInspectorPane = 0
-                        } label: {
-                            Label("Details", systemImage: "rectangle.and.text.magnifyingglass")
-                                .foregroundStyle(
-                                    selectedInspectorPane == 0 ? Color.blue : Color.secondary
-                                )
-                        }
-                        Button {
-                            selectedInspectorPane = 1
-                        } label: {
-                            Label("Changes", systemImage: "clock")
-                                .foregroundStyle(
-                                    selectedInspectorPane == 1 ? Color.blue : Color.secondary
-                                )
+                    if outlineMode == .raw {
+                        HStack {
+                            Button {
+                                inspectorMode = .properties
+                            } label: {
+                                Label("Properties", systemImage: "list.bullet")
+                                    .foregroundStyle(
+                                        inspectorMode == .properties ? Color.blue : Color.secondary
+                                    )
+                            }
+                            Button {
+                                inspectorMode = .data
+                            } label: {
+                                Label("Data", systemImage: "number")
+                                    .foregroundStyle(
+                                        inspectorMode == .data ? Color.blue : Color.secondary
+                                    )
+                            }
                         }
                     }
                 }
@@ -201,6 +171,56 @@ struct ProvisioningProfiles: View {
                 Label("Remove", systemImage: "trash")
             }
         }
+    }
+
+    @ViewBuilder private func inspectProperties(of node: DERNode) -> some View {
+        switch node {
+        case .contextDefinedConstructed(let constructed):
+            ContextDefinedConstructedPane(
+                node: node,
+                contextDefinedConstructed: constructed
+            )
+        case .contextDefinedPrimitive(let primitive):
+            ContextDefinedPrimitivePane(
+                node: node,
+                contextDefinedPrimitive: primitive
+            )
+
+        case .sequence(let sequence):
+            SequencePane(node: node, sequence: sequence)
+        case .set(let set):
+            SetPane(node: node, set: set)
+
+        case .bitString(let bitString):
+            BitStringPane(node: node, bitString: bitString)
+        case .boolean(let value):
+            BooleanPane(node: node, boolean: value)
+        case .integer(let value):
+            IntegerPane(node: node, integer: value)
+        case .null(let null):
+            NullPane(node: node, null: null)
+        case .objectIdentifier(let objectIdentifier):
+            ObjectIdentifierPane(node: node, objectIdentifier: objectIdentifier)
+        case .octetString(let octetString):
+            OctetStringPane(node: node, octetString: octetString)
+        case .printableString(let printableString):
+            PrintableStringPane(node: node, printableString: printableString)
+        case .utcTime(let utcTime):
+            UTCTimePane(node: node, utcTime: utcTime)
+        case .utf8String(let utf8String):
+            UTF8StringPane(node: node, utf8String: utf8String)
+
+        case .unknown:
+            UnknownPane(node: node)
+        }
+    }
+
+    @ViewBuilder private func inspectData(of node: DERNode, data: Data) -> some View {
+        RawDataPane(node: node, data: data)
+    }
+
+    @ViewBuilder private func inspectSemanticProperties(of node: SemanticNode) -> some View {
+        Text(node.type)
     }
 }
 
@@ -263,4 +283,13 @@ struct NodePaneHeader: View {
             Divider()
         }
     }
+}
+
+// MARK: - Inspector Mode
+
+enum InspectorMode: Identifiable, Hashable {
+    case properties
+    case data
+
+    var id: Self { self }
 }

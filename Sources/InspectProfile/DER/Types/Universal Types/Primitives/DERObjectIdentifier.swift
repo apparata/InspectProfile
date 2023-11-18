@@ -5,13 +5,15 @@ public struct DERObjectIdentifier: DERPrimitive {
     public let tag: DERTag
     public let type: String
     public let objectID: DERObjectID
+    public let range: Range<Int>
     public let description: String
 
-    public init(tag: DERTag, objectID: DERObjectID) {
+    public init(tag: DERTag, objectID: DERObjectID, range: Range<Int>) {
         self.id = UUID()
         self.tag = tag
         self.type = "Object Identifier"
         self.objectID = objectID
+        self.range = range
         self.description = "`\(objectID.description)`"
     }
 

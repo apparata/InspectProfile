@@ -60,40 +60,42 @@ public class DERParser {
     private func parseUniversalType(tag: DERTag, length: Int) throws -> DERNode {
         level += 1
         defer { level -= 1}
-        
+
+        let range = scanner.position..<(scanner.position + length)
+
         switch tag {
             //case .implicit:
         case .boolean:
             // https://learn.microsoft.com/en-us/windows/win32/seccertenroll/about-boolean
             let value = try parseBoolean(length: length)
             print("\(indent)- BOOLEAN (\(value))")
-            return .boolean(DERBoolean(tag: tag, value: value))
+            return .boolean(DERBoolean(tag: tag, value: value, range: range))
         case .integer:
             // https://learn.microsoft.com/en-us/windows/win32/seccertenroll/about-integer
             let value = try parseInteger(length: length)
             print("\(indent)- INTEGER (value: \(value))")
-            return .integer(DERInteger(tag: tag, value: value))
+            return .integer(DERInteger(tag: tag, value: value, range: range))
         case .bitString:
             // https://learn.microsoft.com/en-us/windows/win32/seccertenroll/about-bit-string
             let (bitCount, data) = try parseBitString(length: length)
             _ = data
             print("\(indent)- BIT STRING (\(bitCount) bits)")
-            return .bitString(DERBitString(tag: tag, bitCount: bitCount, value: data))
+            return .bitString(DERBitString(tag: tag, bitCount: bitCount, value: data, range: range))
         case .octetString:
             // https://learn.microsoft.com/en-us/windows/win32/seccertenroll/about-octet-string
             let data = try parseOctetString(length: length)
             print("\(indent)- OCTET STRING (\(data.count) bytes)")
-            return .octetString(DEROctetString(tag: tag, value: data))
+            return .octetString(DEROctetString(tag: tag, value: data, range: range))
         case .null:
             // https://learn.microsoft.com/en-us/windows/win32/seccertenroll/about-null
             print("\(indent)- NULL")
             scanner.position += length // should be length = 0
-            return .null(DERNull(tag: tag))
+            return .null(DERNull(tag: tag, range: range))
         case .objectIdentifier:
             // https://learn.microsoft.com/en-us/windows/win32/seccertenroll/about-object-identifier
             let id = try parseObjectIdentifier(length: length)
             print("\(indent)- OBJECT IDENTIFIER (\(id.description))")
-            return .objectIdentifier(DERObjectIdentifier(tag: tag, objectID: id))
+            return .objectIdentifier(DERObjectIdentifier(tag: tag, objectID: id, range: range))
         case .utf8String:
             // https://learn.microsoft.com/en-us/windows/win32/seccertenroll/about-utf8string
             let string = try parseUTF8String(length: length)
@@ -102,17 +104,17 @@ public class DERParser {
             } else {
                 print("\(indent)- UTF-8 STRING (\"\(string)\")")
             }
-            return .utf8String(DERUTF8String(tag: tag, value: string))
+            return .utf8String(DERUTF8String(tag: tag, value: string, range: range))
         case .sequence:
             // https://learn.microsoft.com/en-us/windows/win32/seccertenroll/about-sequence
             print("\(indent)- SEQUENCE (\(length) bytes)")
             let children = try parseSequence(length: length)
-            return .sequence(DERSequence(tag: tag, children: children))
+            return .sequence(DERSequence(tag: tag, children: children, range: range))
         case .set:
             // https://learn.microsoft.com/en-us/windows/win32/seccertenroll/about-set
             print("\(indent)- SET (\(length) bytes)")
             let children = try parseSet(length: length)
-            return .set(DERSet(tag: tag, children: children))
+            return .set(DERSet(tag: tag, children: children, range: range))
         case .printableString:
             // https://learn.microsoft.com/en-us/windows/win32/seccertenroll/about-printablestring
             let string = try parsePrintableString(length: length)
@@ -121,18 +123,18 @@ public class DERParser {
             } else {
                 print("\(indent)- PRINTABLE STRING (\"\(string)\")")
             }
-            return .printableString(DERPrintableString(tag: tag, value: string))
+            return .printableString(DERPrintableString(tag: tag, value: string, range: range))
             //case .t61String:
             //case .ia5String:
         case .utcTime:
             let utcTime = try parseUTCTime(length: length)
             print("\(indent)- UTC TIME (\(utcTime))")
-            return .utcTime(DERUTCTime(tag: tag, value: utcTime))
+            return .utcTime(DERUTCTime(tag: tag, value: utcTime, range: range))
             //case .generalizedTime:
         default:
             print("\(indent)- \(tag) (\(length) bytes)")
             scanner.position += length
-            return .unknown(DERUnknown(tag: tag))
+            return .unknown(DERUnknown(tag: tag, range: range))
         }
     }
     
@@ -141,7 +143,9 @@ public class DERParser {
     private func parseContextDefinedType(tag: DERTag, length: Int) throws -> DERNode {
         level += 1
         defer { level -= 1}
-        
+
+        let range = scanner.position..<(scanner.position + length)
+
         if tag.isConstructed {
             print("\(indent)- Context Defined Constructed: \(tag) (\(length))")
             let endPosition = scanner.position + length
@@ -150,11 +154,11 @@ public class DERParser {
                 let node = try parseType()
                 children.append(node)
             }
-            return .contextDefinedConstructed(DERContextDefinedConstructed(tag: tag, children: children))
+            return .contextDefinedConstructed(DERContextDefinedConstructed(tag: tag, children: children, range: range))
         } else {
             print("\(indent)- Context Defined Primitive: \(tag) (\(length))")
             let primitive = try scanner.scanData(length: length)
-            return .contextDefinedPrimitive(DERContextDefinedPrimitive(tag: tag, primitive: primitive))
+            return .contextDefinedPrimitive(DERContextDefinedPrimitive(tag: tag, primitive: primitive, range: range))
         }
         
     }

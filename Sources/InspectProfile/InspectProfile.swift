@@ -14,6 +14,7 @@ public class InspectProfile {
         return Profile(
             name: path.url.deletingPathExtension().lastPathComponent,
             url: path.url,
+            data: data,
             nodes: nodes,
             semanticNodes: semanticNodes
         )
@@ -27,6 +28,7 @@ public class InspectProfile {
         return Profile(
             name: url.deletingPathExtension().lastPathComponent,
             url: url,
+            data: data,
             nodes: nodes,
             semanticNodes: semanticNodes
         )

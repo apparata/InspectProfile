@@ -6,6 +6,7 @@ public protocol DERNodeType: Identifiable, CustomStringConvertible, Codable, Has
     var id: UUID { get }
     var tag: DERTag { get }
     var type: String { get }
+    var range: Range<Int> { get }
 }
 
 extension DERNodeType {
@@ -81,7 +82,7 @@ public enum DERNode: Identifiable, CustomStringConvertible, Codable, Hashable {
 
         default:
             let tag = node.tag
-            self = .unknown(DERUnknown(tag: tag))
+            self = .unknown(DERUnknown(tag: tag, range: node.range))
         }
     }
 
@@ -117,6 +118,10 @@ public enum DERNode: Identifiable, CustomStringConvertible, Codable, Hashable {
 
     public var type: String {
         node.type
+    }
+
+    public var range: Range<Int> {
+        node.range
     }
 
     public var description: String {

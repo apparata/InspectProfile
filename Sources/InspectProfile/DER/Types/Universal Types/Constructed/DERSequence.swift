@@ -4,13 +4,15 @@ public struct DERSequence: DERConstructed {
     public let id: UUID
     public let tag: DERTag
     public let type: String
+    public let range: Range<Int>
     public let description: String
     public let children: [DERNode]
 
-    public init(tag: DERTag, children: [DERNode]) {
+    public init(tag: DERTag, children: [DERNode], range: Range<Int>) {
         self.id = UUID()
         self.tag = tag
         self.type = "Sequence"
+        self.range = range
         self.description = "\(children.count) children"
         self.children = children
     }
@@ -31,6 +33,7 @@ extension DERSequence {
         case id
         case tag
         case type
+        case range
         case description
         case children
     }
@@ -40,6 +43,7 @@ extension DERSequence {
         id = try container.decode(UUID.self, forKey: .id)
         tag = try container.decode(DERTag.self, forKey: .tag)
         type = try container.decode(String.self, forKey: .type)
+        range = try container.decode(Range<Int>.self, forKey: .range)
         description = try container.decode(String.self, forKey: .description)
         children = try container.decode([DERNode].self, forKey: .children)
     }
@@ -49,6 +53,7 @@ extension DERSequence {
         try container.encode(id, forKey: .id)
         try container.encode(tag, forKey: .tag)
         try container.encode(type, forKey: .type)
+        try container.encode(range, forKey: .range)
         try container.encode(description, forKey: .description)
         try container.encode(children, forKey: .children)
     }
