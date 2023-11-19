@@ -1,6 +1,6 @@
 import Foundation
 
-public struct ProfilePlistNode: SemanticNodeType {
+public struct ProfilePlistNode: NodeType {
 
     public var id: UUID = UUID()
 
@@ -12,7 +12,7 @@ public struct ProfilePlistNode: SemanticNodeType {
 
     public let profilePlist: ProfilePlist
 
-    public var children: [SemanticNode]?
+    public var children: [Node]?
 
     public let dataHash: Int
 
@@ -41,14 +41,14 @@ public struct ProfilePlistNode: SemanticNodeType {
 
         self.profilePlist = profilePlist
 
-        var children: [SemanticNode] = []
+        var children: [Node] = []
         if !profilePlist.entitlements.isEmpty {
             children.append(
                 .entitlements(ProfileEntitlementsNode(entitlements: profilePlist.entitlements))
             )
         }
 
-        let developerCertificates: [SemanticNode] = profilePlist.developerCertificates.map { data in
+        let developerCertificates: [Node] = profilePlist.developerCertificates.map { data in
             .developerCertificate(DeveloperCertificateNode(data: data))
         }
 

@@ -3,7 +3,7 @@ import InspectProfile
 
 struct SetPane: View {
 
-    let node: DERNode
+    let node: Node
 
     let set: DERSet
 

@@ -1,11 +1,29 @@
 import Foundation
 
+// MARK: - Node
+
+public protocol NodeType: Identifiable, Hashable, Codable, CustomStringConvertible {
+    var id: UUID { get }
+    var type: String { get }
+    var description: String { get }
+    var hasChildren: Bool { get }
+    var children: [Node]? { get }
+}
+
+extension NodeType {
+    public var hasChildren: Bool {
+        if let children {
+            return !children.isEmpty
+        } else {
+            return false
+        }
+    }
+}
+
 // MARK: - DERNode
 
-public protocol DERNodeType: Identifiable, CustomStringConvertible, Codable, Hashable {
-    var id: UUID { get }
+public protocol DERNodeType: NodeType {
     var tag: DERTag { get }
-    var type: String { get }
     var range: Range<Int> { get }
 }
 
@@ -20,24 +38,21 @@ extension DERNodeType {
 public protocol DERPrimitive: DERNodeType {
 }
 
+extension DERPrimitive {
+    public var children: [Node]? {
+        return nil
+    }
+}
+
 // MARK: - DERConstructed
 
 public protocol DERConstructed: DERNodeType {
-    var hasChildren: Bool { get }
-    var children: [DERNode] { get }
 }
 
 extension DERConstructed {
-    public var hasChildren: Bool {
-        !children.isEmpty
-    }
-
-    public var children: [DERNode] {
-        return []
-    }
 
     public func child<T: DERNodeType>(at index: Int, as type: T.Type) -> T? {
-        guard let child = children.node(at: index) else {
+        guard let child = children?.node(at: index) else {
             return nil
         }
         return child.node as? T
@@ -48,16 +63,16 @@ extension DERConstructed {
     }
 }
 
-// MARK: - [DERNode]
+// MARK: - [Node]
 
-extension [DERNode] {
-    var second: DERNode? { node(at: 2) }
-    var third: DERNode? { node(at: 3) }
-    var fourth: DERNode? { node(at: 4) }
-    var fifth: DERNode? { node(at: 5) }
-    var sixth: DERNode? { node(at: 6) }
+extension [Node] {
+    var second: Node? { node(at: 2) }
+    var third: Node? { node(at: 3) }
+    var fourth: Node? { node(at: 4) }
+    var fifth: Node? { node(at: 5) }
+    var sixth: Node? { node(at: 6) }
 
-    func node(at index: Int) -> DERNode? {
+    func node(at index: Int) -> Node? {
         guard count > index else {
             return nil
         }
@@ -65,9 +80,11 @@ extension [DERNode] {
     }
 }
 
-// MARK: DERNodeTag
+// MARK: Node
 
-public enum DERNode: Identifiable, CustomStringConvertible, Codable, Hashable {
+public enum Node: Identifiable, CustomStringConvertible, Codable, Hashable {
+
+    // MARK: - DER Nodes
 
     // Context Defined
     case contextDefinedConstructed(DERContextDefinedConstructed)
@@ -90,8 +107,24 @@ public enum DERNode: Identifiable, CustomStringConvertible, Codable, Hashable {
 
     case unknown(DERUnknown)
 
-    init(node: any DERNodeType) {
+    // MARK: - Semantic Nodes
+
+    case pkcs7SignedData(PKCS7SignedDataNode)
+    case pkcs7Data(PKCS7DataNode)
+    case profilePlist(ProfilePlistNode)
+    case entitlements(ProfileEntitlementsNode)
+    case developerCertificates(DeveloperCertificatesNode)
+    case developerCertificate(DeveloperCertificateNode)
+
+    // MARK: - Init
+
+    init(node: any NodeType) {
         switch node {
+
+        // --------------------------------------------------------------------
+        // MARK: DER Nodes
+        // --------------------------------------------------------------------
+
         case let node as DERContextDefinedConstructed: self = .contextDefinedConstructed(node)
         case let node as DERContextDefinedPrimitive: self = .contextDefinedPrimitive(node)
 
@@ -108,13 +141,27 @@ public enum DERNode: Identifiable, CustomStringConvertible, Codable, Hashable {
         case let node as DERUTCTime: self = .utcTime(node)
         case let node as DERUTF8String: self = .utf8String(node)
 
+        // --------------------------------------------------------------------
+        // MARK: Semantic Nodes
+        // --------------------------------------------------------------------
+
+        case let node as PKCS7SignedDataNode: self = .pkcs7SignedData(node)
+        case let node as PKCS7DataNode: self = .pkcs7Data(node)
+        case let node as ProfilePlistNode: self = .profilePlist(node)
+        case let node as ProfileEntitlementsNode: self = .entitlements(node)
+        case let node as DeveloperCertificatesNode: self = .developerCertificates(node)
+        case let node as DeveloperCertificateNode: self = .developerCertificate(node)
+
+        // --------------------------------------------------------------------
+        // MARK: Unknown node
+        // --------------------------------------------------------------------
+
         default:
-            let tag = node.tag
-            self = .unknown(DERUnknown(tag: tag, range: node.range))
+            self = .unknown(DERUnknown(tag: DERTag(0), range: 0..<1))
         }
     }
 
-    public var node: any DERNodeType {
+    public var node: any NodeType {
         switch self {
         case .contextDefinedConstructed(let node): return node
         case .contextDefinedPrimitive(let node): return node
@@ -133,6 +180,13 @@ public enum DERNode: Identifiable, CustomStringConvertible, Codable, Hashable {
         case .utf8String(let node): return node
 
         case .unknown(let node): return node
+
+        case .pkcs7SignedData(let node): return node
+        case .pkcs7Data(let node): return node
+        case .profilePlist(let node): return node
+        case .entitlements(let node): return node
+        case .developerCertificates(let node): return node
+        case .developerCertificate(let node): return node
         }
     }
 
@@ -140,16 +194,22 @@ public enum DERNode: Identifiable, CustomStringConvertible, Codable, Hashable {
         node.id
     }
 
-    public var tag: DERTag {
-        node.tag
+    public var tag: DERTag? {
+        if let derNode = node as? (any DERNodeType) {
+            return derNode.tag
+        }
+        return nil
     }
 
     public var type: String {
         node.type
     }
 
-    public var range: Range<Int> {
-        node.range
+    public var range: Range<Int>? {
+        if let derNode = node as? (any DERNodeType) {
+            return derNode.range
+        }
+        return nil
     }
 
     public var description: String {
@@ -164,12 +224,8 @@ public enum DERNode: Identifiable, CustomStringConvertible, Codable, Hashable {
         }
     }
 
-    public var children: [DERNode]? {
-        if let constructed = node as? (any DERConstructed) {
-            return constructed.children
-        } else {
-            return nil
-        }
+    public var children: [Node]? {
+        node.children
     }
 
     public func isObject(_ objectID: DERObjectID) -> Bool {

@@ -3,7 +3,7 @@ import InspectProfile
 
 struct ContextDefinedConstructedPane: View {
 
-    let node: DERNode
+    let node: Node
 
     let contextDefinedConstructed: DERContextDefinedConstructed
 

@@ -17,7 +17,7 @@ import Foundation
 ///
 /// SignerInfos ::= SET OF SignerInfo
 /// ```
-public struct PKCS7SignedDataNode: SemanticNodeType {
+public struct PKCS7SignedDataNode: NodeType {
 
     public static let objectID = DERObjectID(
         "1.2.840.113549.1.7.2",
@@ -34,9 +34,9 @@ public struct PKCS7SignedDataNode: SemanticNodeType {
         Self.objectID.string
     }
 
-    public var children: [SemanticNode]?
+    public var children: [Node]?
 
-    public init(children: [SemanticNode]?) {
+    public init(children: [Node]?) {
         self.children = children
     }
 }

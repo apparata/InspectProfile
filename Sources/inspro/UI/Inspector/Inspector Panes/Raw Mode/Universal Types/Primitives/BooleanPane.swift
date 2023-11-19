@@ -3,7 +3,7 @@ import InspectProfile
 
 struct BooleanPane: View {
 
-    let node: DERNode
+    let node: Node
 
     let boolean: DERBoolean
 

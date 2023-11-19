@@ -1,6 +1,6 @@
 import Foundation
 
-public struct PKCS7DataNode: SemanticNodeType {
+public struct PKCS7DataNode: NodeType {
 
     public static let objectID = DERObjectID(
         "1.2.840.113549.1.7.1",
@@ -17,9 +17,9 @@ public struct PKCS7DataNode: SemanticNodeType {
         Self.objectID.string
     }
 
-    public var children: [SemanticNode]?
+    public var children: [Node]?
 
-    public init(children: [SemanticNode]?) {
+    public init(children: [Node]?) {
         self.children = children
     }
 }

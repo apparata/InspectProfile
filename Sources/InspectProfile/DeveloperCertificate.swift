@@ -4,7 +4,7 @@ public struct DeveloperCertificate: Codable, Hashable {
 
     public let data: Data
 
-    public let nodes: [DERNode]
+    public let nodes: [Node]
 
     public init(data: Data) {
         self.data = data

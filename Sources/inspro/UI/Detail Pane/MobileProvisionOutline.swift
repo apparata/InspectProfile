@@ -5,9 +5,9 @@ struct MobileProvisionOutline: View {
 
     let profile: Profile
 
-    @Binding var selectedNode: DERNode?
+    @Binding var selectedNode: Node?
 
-    @Binding var selectedSemanticNode: SemanticNode?
+    @Binding var selectedSemanticNode: Node?
 
     @Binding var outlineMode: OutlineMode
 
@@ -78,7 +78,7 @@ struct MobileProvisionOutline: View {
         }
     }
 
-    @ViewBuilder private func entry(for node: DERNode) -> some View {
+    @ViewBuilder private func entry(for node: Node) -> some View {
         HStack(spacing: 0) {
             Image(systemName: node.systemIcon)
                 .font(.system(size: round(13 * textScale)))
@@ -98,28 +98,6 @@ struct MobileProvisionOutline: View {
         }
         .tag(node)
     }
-
-    @ViewBuilder private func entry(for node: SemanticNode) -> some View {
-        HStack(spacing: 0) {
-            Image(systemName: node.systemIcon)
-                .font(.system(size: round(13 * textScale)))
-                .fontWeight(.medium)
-                .foregroundStyle(node.iconColor)
-                .padding(.leading, 2)
-                .padding(.trailing, 4)
-            Text(node.type)
-                .font(.system(size: round(15 * textScale)))
-                .fontWeight(.medium)
-                .foregroundStyle(.primary)
-                .padding(.trailing, 16)
-            Text(.init(node.description))
-                .font(.system(size: round(13 * textScale)))
-                .foregroundStyle(.secondary)
-                .opacity(0.6)
-        }
-        .tag(node)
-    }
-
 }
 
 enum OutlineMode: Identifiable, Hashable {

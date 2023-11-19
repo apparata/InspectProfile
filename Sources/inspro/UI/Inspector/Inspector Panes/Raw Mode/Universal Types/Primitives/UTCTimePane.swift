@@ -3,7 +3,7 @@ import InspectProfile
 
 struct UTCTimePane: View {
 
-    let node: DERNode
+    let node: Node
 
     let utcTime: DERUTCTime
 

@@ -3,7 +3,7 @@ import InspectProfile
 
 struct NullPane: View {
 
-    let node: DERNode
+    let node: Node
 
     let null: DERNull
 

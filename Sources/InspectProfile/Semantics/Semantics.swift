@@ -7,7 +7,7 @@ enum SemanticsError: Error {
 
 class Semantics {
 
-    func processNodes(_ nodes: [DERNode]) throws -> [SemanticNode] {
+    func processNodes(_ nodes: [Node]) throws -> [Node] {
         let semanticNodes = nodes.compactMap { node in
             do {
                 let semanticNode = try processNode(node)
@@ -20,14 +20,14 @@ class Semantics {
         return semanticNodes
     }
 
-    private func processNode(_ node: DERNode) throws -> SemanticNode {
-        if let signedDataNode = processPKCS7SignedDataNode(node) {
-            return signedDataNode
+    private func processNode(_ node: Node) throws -> Node {
+        guard let signedDataNode = processPKCS7SignedDataNode(node) else {
+            throw SemanticsError.formatNotRecognized
         }
-        throw SemanticsError.formatNotRecognized
+        return signedDataNode
     }
 
-    private func processPKCS7SignedDataNode(_ node: DERNode) -> SemanticNode? {
+    private func processPKCS7SignedDataNode(_ node: Node) -> Node? {
         guard node.isObject(PKCS7SignedDataNode.objectID) else {
             return nil
         }
@@ -53,7 +53,7 @@ class Semantics {
         return .pkcs7SignedData(signedDataNode)
     }
 
-    private func processPKCS7DataNode(_ node: DERNode) -> SemanticNode? {
+    private func processPKCS7DataNode(_ node: Node) -> Node? {
         guard node.isObject(PKCS7DataNode.objectID) else {
             return nil
         }
@@ -75,7 +75,7 @@ class Semantics {
         return .pkcs7Data(dataNode)
     }
 
-    private func processPlistNode(_ data: Data) -> SemanticNode? {
+    private func processPlistNode(_ data: Data) -> Node? {
         guard let plistNode = ProfilePlistNode(data: data) else {
             return nil
         }

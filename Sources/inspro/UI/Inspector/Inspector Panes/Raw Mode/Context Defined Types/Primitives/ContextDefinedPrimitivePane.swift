@@ -3,7 +3,7 @@ import InspectProfile
 
 struct ContextDefinedPrimitivePane: View {
 
-    let node: DERNode
+    let node: Node
 
     let contextDefinedPrimitive: DERContextDefinedPrimitive
 

@@ -3,7 +3,7 @@ import InspectProfile
 
 struct SequencePane: View {
 
-    let node: DERNode
+    let node: Node
 
     let sequence: DERSequence
 

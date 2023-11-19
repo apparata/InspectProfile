@@ -3,7 +3,7 @@ import InspectProfile
 
 struct EntitlementsPane: View {
 
-    let node: SemanticNode
+    let node: Node
 
     let entitlements: [String: String]
 

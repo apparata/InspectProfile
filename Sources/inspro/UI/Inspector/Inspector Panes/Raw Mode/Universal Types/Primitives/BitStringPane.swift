@@ -3,7 +3,7 @@ import InspectProfile
 
 struct BitStringPane: View {
 
-    let node: DERNode
+    let node: Node
     
     let bitString: DERBitString
 

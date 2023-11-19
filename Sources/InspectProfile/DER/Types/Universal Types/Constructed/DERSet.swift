@@ -6,9 +6,9 @@ public struct DERSet: DERConstructed, Codable, Hashable {
     public let type: String
     public let range: Range<Int>
     public let description: String
-    public let children: [DERNode]
+    public let children: [Node]?
 
-    public init(tag: DERTag, children: [DERNode], range: Range<Int>) {
+    public init(tag: DERTag, children: [Node], range: Range<Int>) {
         self.id = UUID()
         self.tag = tag
         self.type = "Set"
@@ -45,7 +45,7 @@ extension DERSet {
         type = try container.decode(String.self, forKey: .type)
         range = try container.decode(Range<Int>.self, forKey: .range)
         description = try container.decode(String.self, forKey: .description)
-        children = try container.decode([DERNode].self, forKey: .children)
+        children = try container.decode([Node].self, forKey: .children)
     }
 
     public func encode(to encoder: Encoder) throws {

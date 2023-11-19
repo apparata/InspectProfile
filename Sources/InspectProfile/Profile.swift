@@ -5,15 +5,15 @@ public class Profile: Identifiable, Codable, Hashable {
     public let name: String
     public let url: URL?
     public let data: Data
-    public let nodes: [DERNode]
-    public let semanticNodes: [SemanticNode]
+    public let nodes: [Node]
+    public let semanticNodes: [Node]
 
     public init(
         name: String = "Untitled",
         url: URL? = nil,
         data: Data,
-        nodes: [DERNode] = [],
-        semanticNodes: [SemanticNode] = []
+        nodes: [Node] = [],
+        semanticNodes: [Node] = []
     ) {
         self.id = UUID()
         self.name = name
@@ -23,8 +23,11 @@ public class Profile: Identifiable, Codable, Hashable {
         self.semanticNodes = semanticNodes
     }
 
-    public func dataForNode(_ node: DERNode) -> Data {
-        data[node.range]
+    public func dataForNode(_ node: Node) -> Data? {
+        guard let range = node.range else {
+            return nil
+        }
+        return data[range]
     }
 
     public func hash(into hasher: inout Hasher) {
@@ -53,8 +56,8 @@ public class Profile: Identifiable, Codable, Hashable {
         name = try container.decode(String.self, forKey: .name)
         url = try container.decodeIfPresent(URL.self, forKey: .url)
         data = try container.decode(Data.self, forKey: .data)
-        nodes = try container.decode([DERNode].self, forKey: .nodes)
-        semanticNodes = try container.decode([SemanticNode].self, forKey: .semanticNodes)
+        nodes = try container.decode([Node].self, forKey: .nodes)
+        semanticNodes = try container.decode([Node].self, forKey: .semanticNodes)
     }
 
     public func encode(to encoder: Encoder) throws {

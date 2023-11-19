@@ -1,6 +1,6 @@
 import Foundation
 
-public struct DeveloperCertificatesNode: SemanticNodeType {
+public struct DeveloperCertificatesNode: NodeType {
 
     public var id: UUID = UUID()
 
@@ -10,9 +10,9 @@ public struct DeveloperCertificatesNode: SemanticNodeType {
         String(children?.count ?? 0)
     }
 
-    public var children: [SemanticNode]?
+    public var children: [Node]?
 
-    public init(children: [SemanticNode]?) {
+    public init(children: [Node]?) {
         self.children = children
     }
 }

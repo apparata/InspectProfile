@@ -3,7 +3,7 @@ import InspectProfile
 
 struct PrintableStringPane: View {
 
-    let node: DERNode
+    let node: Node
 
     let printableString: DERPrintableString
 

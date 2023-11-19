@@ -3,7 +3,7 @@ import InspectProfile
 
 struct IntegerPane: View {
 
-    let node: DERNode
+    let node: Node
 
     let integer: DERInteger
 

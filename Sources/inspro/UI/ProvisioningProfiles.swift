@@ -7,9 +7,9 @@ struct ProvisioningProfiles: View {
 
     @State private var selectedProfile: Profile?
 
-    @State private var selectedNode: DERNode?
+    @State private var selectedNode: Node?
 
-    @State private var selectedSemanticNode: SemanticNode?
+    @State private var selectedSemanticNode: Node?
 
     @State private var inspectorMode: InspectorMode = .properties
 
@@ -105,13 +105,13 @@ struct ProvisioningProfiles: View {
                     if let node = selectedNode {
                         if inspectorMode == .properties {
                             inspectProperties(of: node)
-                        } else if inspectorMode == .data, let profile = selectedProfile {
-                            inspectData(of: node, data: profile.dataForNode(node))
+                        } else if inspectorMode == .data, let profile = selectedProfile, let data = profile.dataForNode(node) {
+                            inspectData(of: node, data: data)
                         }
                     }
                 } else if outlineMode == .semantic {
                     if let node = selectedSemanticNode {
-                        inspectSemanticProperties(of: node)
+                        inspectProperties(of: node)
                     }
                 }
             }
@@ -173,8 +173,13 @@ struct ProvisioningProfiles: View {
         }
     }
 
-    @ViewBuilder private func inspectProperties(of node: DERNode) -> some View {
+    @ViewBuilder private func inspectProperties(of node: Node) -> some View {
         switch node {
+
+        // --------------------------------------------------------------------
+        // MARK: DER Nodes
+        // --------------------------------------------------------------------
+
         case .contextDefinedConstructed(let constructed):
             ContextDefinedConstructedPane(
                 node: node,
@@ -212,15 +217,11 @@ struct ProvisioningProfiles: View {
 
         case .unknown:
             UnknownPane(inspectable: node)
-        }
-    }
 
-    @ViewBuilder private func inspectData(of node: DERNode, data: Data) -> some View {
-        RawDataPane(inspectable: node, data: data)
-    }
+        // --------------------------------------------------------------------
+        // MARK: Semantic Nodes
+        // --------------------------------------------------------------------
 
-    @ViewBuilder private func inspectSemanticProperties(of node: SemanticNode) -> some View {
-        switch node {
         case .pkcs7SignedData:
             UnknownPane(inspectable: node)
         case .pkcs7Data:
@@ -234,6 +235,10 @@ struct ProvisioningProfiles: View {
         case .developerCertificate(let certificate):
             DeveloperCertificatePane(inspectable: node, certificate: certificate.certificate)
         }
+    }
+
+    @ViewBuilder private func inspectData(of node: Node, data: Data) -> some View {
+        RawDataPane(inspectable: node, data: data)
     }
 }
 

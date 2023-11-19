@@ -3,7 +3,7 @@ import InspectProfile
 
 struct ProfilePlistPane: View {
 
-    let node: SemanticNode
+    let node: Node
 
     let plist: ProfilePlist
 

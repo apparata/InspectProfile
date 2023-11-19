@@ -1,6 +1,6 @@
 import Foundation
 
-public struct ProfileEntitlementsNode: SemanticNodeType {
+public struct ProfileEntitlementsNode: NodeType {
 
     public var id: UUID = UUID()
 
@@ -10,7 +10,7 @@ public struct ProfileEntitlementsNode: SemanticNodeType {
         String(entitlements.count)
     }
 
-    public var children: [SemanticNode]? = nil
+    public var children: [Node]? = nil
 
     public let entitlements: [String: String]
 

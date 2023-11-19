@@ -3,7 +3,7 @@ import InspectProfile
 
 struct ObjectIdentifierPane: View {
 
-    let node: DERNode
+    let node: Node
 
     let objectIdentifier: DERObjectIdentifier
 

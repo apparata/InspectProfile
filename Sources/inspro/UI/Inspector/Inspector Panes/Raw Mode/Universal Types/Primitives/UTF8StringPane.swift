@@ -3,7 +3,7 @@ import InspectProfile
 
 struct UTF8StringPane: View {
 
-    let node: DERNode
+    let node: Node
 
     let utf8String: DERUTF8String
 

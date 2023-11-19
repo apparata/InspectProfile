@@ -25,9 +25,9 @@ public class DERParser {
     
     // MARK: Parse
     
-    public func parse() throws -> [DERNode] {
+    public func parse() throws -> [Node] {
         print("Parsing...")
-        var nodes: [DERNode] = []
+        var nodes: [Node] = []
         while scanner.position < data.count {
             let node = try parseType()
             nodes.append(node)
@@ -38,7 +38,7 @@ public class DERParser {
     
     // MARK: Parse Type
     
-    private func parseType() throws -> DERNode {
+    private func parseType() throws -> Node {
 
         let tag = try parseTag()
         let length = try parseLength()
@@ -57,7 +57,7 @@ public class DERParser {
     
     // MARK: Parse Universal Type
     
-    private func parseUniversalType(tag: DERTag, length: Int) throws -> DERNode {
+    private func parseUniversalType(tag: DERTag, length: Int) throws -> Node {
         level += 1
         defer { level -= 1}
 
@@ -140,7 +140,7 @@ public class DERParser {
     
     // MARK: Parse Context Defined Type
     
-    private func parseContextDefinedType(tag: DERTag, length: Int) throws -> DERNode {
+    private func parseContextDefinedType(tag: DERTag, length: Int) throws -> Node {
         level += 1
         defer { level -= 1}
 
@@ -149,7 +149,7 @@ public class DERParser {
         if tag.isConstructed {
             print("\(indent)- Context Defined Constructed: \(tag) (\(length))")
             let endPosition = scanner.position + length
-            var children: [DERNode] = []
+            var children: [Node] = []
             while scanner.position < endPosition {
                 let node = try parseType()
                 children.append(node)
@@ -193,9 +193,9 @@ public class DERParser {
     
     // MARK: Parse Sequence
     
-    private func parseSequence(length: Int) throws -> [DERNode] {
+    private func parseSequence(length: Int) throws -> [Node] {
         let endPosition = scanner.position + length
-        var children: [DERNode] = []
+        var children: [Node] = []
         while scanner.position < endPosition {
             let node = try parseType()
             children.append(node)
@@ -205,9 +205,9 @@ public class DERParser {
     
     // MARK: Parse Set
     
-    private func parseSet(length: Int) throws -> [DERNode]  {
+    private func parseSet(length: Int) throws -> [Node]  {
         let endPosition = scanner.position + length
-        var children: [DERNode] = []
+        var children: [Node] = []
         while scanner.position < endPosition {
             let node = try parseType()
             children.append(node)

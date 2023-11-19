@@ -3,7 +3,7 @@ import InspectProfile
 
 struct OctetStringPane: View {
 
-    let node: DERNode
+    let node: Node
 
     let octetString: DEROctetString
 
