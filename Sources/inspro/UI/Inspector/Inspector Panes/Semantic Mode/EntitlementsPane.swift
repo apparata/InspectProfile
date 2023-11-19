@@ -10,18 +10,18 @@ struct EntitlementsPane: View {
     var body: some View {
         InspectorPaneHeader(inspectable: node)
         ScrollView {
-            VStack {
+            VStack(alignment: .leading, spacing: 12) {
                 ForEach(Array(entitlements.keys), id: \.self) { key in
                     if let value = entitlements[key] {
                         InspectorLabel(key)
-                        InspectorLabel(value)
+                            .padding(.trailing, 8)
+                        InspectorTextField(value)
+                            .padding(.leading, 8)
+                        InspectorDivider()
                     }
                 }
             }
-        }
-
-        InspectorGrid {
-            EmptyView()
+            .padding(.vertical)
         }
     }
 }

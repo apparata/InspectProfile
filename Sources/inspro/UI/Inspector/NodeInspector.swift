@@ -113,8 +113,12 @@ struct NodeInspector: View {
             UnknownPane(inspectable: node)
         case .profilePlist(let plist):
             ProfilePlistPane(node: node, plist: plist.profilePlist)
+        case .derProfile(let profile):
+            DERProfilePane(inspectable: node, data: profile.data)
         case .entitlements(let entitlements):
             EntitlementsPane(node: node, entitlements: entitlements.entitlements)
+        case .provisionedDevices(let devices):
+            ProvisionedDevicesPane(node: node, devices: devices.devices)
         case .developerCertificates(_):
             UnknownPane(inspectable: node)
         case .developerCertificate(let certificate):

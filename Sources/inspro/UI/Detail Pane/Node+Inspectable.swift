@@ -34,7 +34,9 @@ extension Node: Inspectable {
         case .pkcs7SignedData: "checkmark.shield"
         case .pkcs7Data: "8.square"
         case .profilePlist: "list.bullet"
+        case .derProfile: "8.square"
         case .entitlements: "wallet.pass"
+        case .provisionedDevices: "apps.iphone"
         case .developerCertificates: "person.2.badge.key"
         case .developerCertificate: "checkmark.seal"
         }
@@ -72,7 +74,9 @@ extension Node: Inspectable {
         case .pkcs7SignedData: .green
         case .pkcs7Data: .blue
         case .profilePlist: .purple
+        case .derProfile: .blue
         case .entitlements: .orange
+        case .provisionedDevices: .green
         case .developerCertificates: .cyan
         case .developerCertificate: .blue
         }

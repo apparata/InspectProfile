@@ -11,6 +11,7 @@ struct InspectorLabel: View {
     var body: some View {
         Text(text)
             .font(.subheadline)
+            .foregroundStyle(.secondary)
             .padding(.leading, inspectorGridRowPadding)
             .gridColumnAlignment(.trailing)
     }

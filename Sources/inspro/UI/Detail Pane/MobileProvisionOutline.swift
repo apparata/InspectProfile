@@ -51,8 +51,7 @@ struct MobileProvisionOutline: View {
                 .zIndex(outlineMode == .raw ? 2 : 0)
             }
         }
-        .accentColor(.gray)
-        .environment(\.dynamicTypeSize, .xxLarge)
+        .accentColor(Color(red: 0.7, green: 0.7, blue: 0.7))
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .navigationTitle(profile.url?.lastPathComponent ?? profile.name)
         .toolbar {

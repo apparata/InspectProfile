@@ -67,7 +67,7 @@ struct InspectorHexDump: View {
                     Button {
                         let windowData = WindowData(
                             title: title,
-                            data: data
+                            data: Data(data)
                         )
                         openWindow(id: NodeTreeWindow.windowID, value: windowData)
                     } label: {

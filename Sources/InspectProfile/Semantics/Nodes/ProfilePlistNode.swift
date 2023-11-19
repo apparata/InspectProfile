@@ -41,7 +41,10 @@ public struct ProfilePlistNode: NodeType {
 
         self.profilePlist = profilePlist
 
-        var children: [Node] = []
+        var children: [Node] = [
+            .derProfile(DERProfileNode(data: profilePlist.DEREncodedProfile))
+        ]
+        
         if !profilePlist.entitlements.isEmpty {
             children.append(
                 .entitlements(ProfileEntitlementsNode(entitlements: profilePlist.entitlements))
@@ -50,6 +53,10 @@ public struct ProfilePlistNode: NodeType {
 
         let developerCertificates: [Node] = profilePlist.developerCertificates.map { data in
             .developerCertificate(DeveloperCertificateNode(data: data))
+        }
+
+        if let devices = profilePlist.provisionedDevices {
+            children.append(.provisionedDevices(ProvisionedDevicesNode(devices: devices)))
         }
 
         children.append(.developerCertificates(DeveloperCertificatesNode(children: developerCertificates)))
@@ -79,6 +86,7 @@ public struct ProfilePlist {
     public let developerCertificates: [Data]
     public let DEREncodedProfile: Data
     public fileprivate(set) var entitlements: [String: Any]
+    public let provisionedDevices: [String]?
     public let expirationDate: Date
     public let name: String
     public let teamIdentifier: [String]
@@ -98,6 +106,7 @@ extension ProfilePlist: Codable {
         case isXcodeManaged = "IsXcodeManaged"
         case developerCertificates = "DeveloperCertificates"
         case DEREncodedProfile = "DER-Encoded-Profile"
+        case provisionedDevices = "ProvisionedDevices"
         case expirationDate = "ExpirationDate"
         case name = "Name"
         case teamIdentifier = "TeamIdentifier"
@@ -115,7 +124,9 @@ extension ProfilePlist: Codable {
         platform = try container.decode([String].self, forKey: .platform)
         isXcodeManaged = try container.decode(Bool.self, forKey: .isXcodeManaged)
         developerCertificates = try container.decode([Data].self, forKey: .developerCertificates)
-        DEREncodedProfile = try container.decode(Data.self, forKey: .DEREncodedProfile)
+        let base64Data = try container.decode(Data.self, forKey: .DEREncodedProfile)
+        DEREncodedProfile = Data(base64Encoded: base64Data) ?? base64Data
+        provisionedDevices = try container.decodeIfPresent([String].self, forKey: .provisionedDevices)
         expirationDate = try container.decode(Date.self, forKey: .expirationDate)
         name = try container.decode(String.self, forKey: .name)
         teamIdentifier = try container.decode([String].self, forKey: .teamIdentifier)

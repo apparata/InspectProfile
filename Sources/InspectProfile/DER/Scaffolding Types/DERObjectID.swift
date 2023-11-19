@@ -39,6 +39,9 @@ public struct DERObjectID: Codable, Hashable, Equatable, CustomStringConvertible
 
         .PilotAttributeType.uid,
 
+        .Signature.ecdsaWithSHA256,
+        .Signature.ecdsaWithSHA384,
+
         .PKCS1.rsaEncryption,
         .PKCS1.sha1WithRSASignature,
         .PKCS1.sha256WithRSASignature,
@@ -56,9 +59,13 @@ public struct DERObjectID: Codable, Hashable, Equatable, CustomStringConvertible
         .EncryptionAlgorithm.desEDE3CBC,
 
         .AppleCertificateExtension.iPhoneSoftwareDevelopmentSigning,
+        .AppleCertificateExtension.iPhoneSoftwareSubmissionSigning,
+        .AppleCertificateExtension.macApplicationSoftwareSubmissionSigning,
         .AppleCertificateExtension.macApplicationSoftwareDevelopmentSigning,
+        .AppleCertificateExtension.developerIDSigningIntermediateCertificate,
         .AppleCertificateExtension.unknownDevidKernel,
         .AppleCertificateExtension.unknown58,
+        .AppleCertificateExtension.unknown12_19,
 
         .PKIX.CertificateExtension.authorityInfoAccess,
 
@@ -66,7 +73,10 @@ public struct DERObjectID: Codable, Hashable, Equatable, CustomStringConvertible
         .PKIX.AccessDescriptor.caIssuers,
 
         .Algorithm.desCBC,
-        .Algorithm.hashAlgorithmIdentifier,
+        .Algorithm.sha1,
+        .Algorithm.sha256,
+
+        .Curve.ansip384r1,
 
         .AttributeType.commonName,
         .AttributeType.countryName,
@@ -87,6 +97,19 @@ public struct DERObjectID: Codable, Hashable, Equatable, CustomStringConvertible
 
     public struct PilotAttributeType {
         public static let uid = DERObjectID("0.9.2342.19200300.100.1.1", name: "\"uid\" LDAP attribute type: User shortname or userid")
+    }
+
+    // MARK: - Key Type
+
+    public struct KeyType {
+        public static let ecPublicKey = DERObjectID("1.2.840.10045.2.1", name: "Elliptic curve public key")
+    }
+
+    // MARK: - Signature
+
+    public struct Signature {
+        public static let ecdsaWithSHA256 = DERObjectID("1.2.840.10045.4.3.2", name: "Signature: Elliptic Curve Digital Signature Algorithm (DSA) coupled with the Secure Hash Algorithm 256 (SHA256) algorithm")
+        public static let ecdsaWithSHA384 = DERObjectID("1.2.840.10045.4.3.3", name: "Elliptic curve Digital Signature Algorithm (DSA) coupled with the Secure Hash Algorithm 384 (SHA384) algorithm")
     }
 
     // MARK: - PKCS#1
@@ -125,9 +148,13 @@ public struct DERObjectID: Codable, Hashable, Equatable, CustomStringConvertible
 
     public struct AppleCertificateExtension {
         public static let iPhoneSoftwareDevelopmentSigning = DERObjectID("1.2.840.113635.100.6.1.2", name: "Apple Certificate Extension: iPhone Software Development Signing")
+        public static let iPhoneSoftwareSubmissionSigning = DERObjectID("1.2.840.113635.100.6.1.4", name: "iPhone Software Submission Signing")
+        public static let macApplicationSoftwareSubmissionSigning = DERObjectID("1.2.840.113635.100.6.1.7", name: "Mac Application Software Submission Signing")
         public static let macApplicationSoftwareDevelopmentSigning = DERObjectID("1.2.840.113635.100.6.1.12", name: "Apple Certificate Extension: Mac Application Software Development Signing")
+        public static let developerIDSigningIntermediateCertificate = DERObjectID("1.2.840.113635.100.6.2.17", name: "Apple Intermediate Certificate: Apple System Integration CA 4")
         public static let unknownDevidKernel = DERObjectID("1.2.840.113635.100.6.2.18", name: "Apple Certificate Extension: devid_kernel")
         public static let unknown58 = DERObjectID("1.2.840.113635.100.6.58", name: "Apple Certificate Extension: 58")
+        public static let unknown12_19 = DERObjectID("1.2.840.113635.100.12.19", name: "Apple: Unknown ???")
     }
 
     // MARK: - PKIX
@@ -148,7 +175,15 @@ public struct DERObjectID: Codable, Hashable, Equatable, CustomStringConvertible
 
     public struct Algorithm {
         public static let desCBC = DERObjectID("1.3.14.3.2.7", name: "56-bit Data Encryption Standard (DES) in Cipher Block Chaining (CBC)")
-        public static let hashAlgorithmIdentifier = DERObjectID("1.3.14.3.2.26", name: "Secure Hash Algorithm, SHA-1")
+        public static let sha1 = DERObjectID("1.3.14.3.2.26", name: "Secure Hash Algorithm, SHA-1")
+        public static let sha256 = DERObjectID("2.16.840.1.101.3.4.2.1", name: "Secure Hash Algorithm, SHA-256")
+    }
+
+    // MARK: - Curve
+
+    public struct Curve {
+        public static let ansip384r1 = DERObjectID("1.3.132.0.34", name: "NIST 384-bit elliptic curve")
+        public static let secp256r1 = DERObjectID("1.2.840.10045.3.1.7", name: "256-bit Elliptic Curve Cryptography (ECC)")
     }
 
     // MARK: - AttributeType

@@ -195,7 +195,9 @@ public enum Node: Identifiable, CustomStringConvertible, Codable, Hashable {
     case pkcs7SignedData(PKCS7SignedDataNode)
     case pkcs7Data(PKCS7DataNode)
     case profilePlist(ProfilePlistNode)
+    case derProfile(DERProfileNode)
     case entitlements(ProfileEntitlementsNode)
+    case provisionedDevices(ProvisionedDevicesNode)
     case developerCertificates(DeveloperCertificatesNode)
     case developerCertificate(DeveloperCertificateNode)
 
@@ -232,6 +234,7 @@ public enum Node: Identifiable, CustomStringConvertible, Codable, Hashable {
         case let node as PKCS7DataNode: self = .pkcs7Data(node)
         case let node as ProfilePlistNode: self = .profilePlist(node)
         case let node as ProfileEntitlementsNode: self = .entitlements(node)
+        case let node as ProvisionedDevicesNode: self = .provisionedDevices(node)
         case let node as DeveloperCertificatesNode: self = .developerCertificates(node)
         case let node as DeveloperCertificateNode: self = .developerCertificate(node)
 
@@ -246,30 +249,32 @@ public enum Node: Identifiable, CustomStringConvertible, Codable, Hashable {
 
     public var node: any NodeType {
         switch self {
-        case .contextDefinedConstructed(let node): return node
-        case .contextDefinedPrimitive(let node): return node
+        case .contextDefinedConstructed(let node): node
+        case .contextDefinedPrimitive(let node): node
 
-        case .sequence(let node): return node
-        case .set(let node): return node
+        case .sequence(let node): node
+        case .set(let node): node
 
-        case .bitString(let node): return node
-        case .boolean(let node): return node
-        case .integer(let node): return node
-        case .null(let node): return node
-        case .objectIdentifier(let node): return node
-        case .octetString(let node): return node
-        case .printableString(let node): return node
-        case .utcTime(let node): return node
-        case .utf8String(let node): return node
+        case .bitString(let node): node
+        case .boolean(let node): node
+        case .integer(let node): node
+        case .null(let node): node
+        case .objectIdentifier(let node): node
+        case .octetString(let node): node
+        case .printableString(let node): node
+        case .utcTime(let node): node
+        case .utf8String(let node): node
 
-        case .unknown(let node): return node
+        case .unknown(let node): node
 
-        case .pkcs7SignedData(let node): return node
-        case .pkcs7Data(let node): return node
-        case .profilePlist(let node): return node
-        case .entitlements(let node): return node
-        case .developerCertificates(let node): return node
-        case .developerCertificate(let node): return node
+        case .pkcs7SignedData(let node): node
+        case .pkcs7Data(let node): node
+        case .profilePlist(let node): node
+        case .derProfile(let node): node
+        case .entitlements(let node): node
+        case .provisionedDevices(let node): node
+        case .developerCertificates(let node): node
+        case .developerCertificate(let node): node
         }
     }
 
