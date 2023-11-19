@@ -12,7 +12,7 @@ struct BitStringPane: View {
     @Environment(\.openWindow) private var openWindow
 
     var body: some View {
-        NodePaneHeader(node: node)
-        InspectorHexDump(node: node, data: bitString.value)
+        InspectorPaneHeader(inspectable: node)
+        InspectorHexDump(data: bitString.value)
     }
 }

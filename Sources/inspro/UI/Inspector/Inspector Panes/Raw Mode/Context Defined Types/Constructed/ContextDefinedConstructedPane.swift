@@ -8,7 +8,7 @@ struct ContextDefinedConstructedPane: View {
     let contextDefinedConstructed: DERContextDefinedConstructed
 
     var body: some View {
-        NodePaneHeader(node: node)
+        InspectorPaneHeader(inspectable: node)
         InspectorGrid {
             EmptyView()
         }

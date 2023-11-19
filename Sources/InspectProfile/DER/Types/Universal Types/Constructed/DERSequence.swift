@@ -16,6 +16,15 @@ public struct DERSequence: DERConstructed {
         self.description = "\(children.count) children"
         self.children = children
     }
+
+    public func isObject(_ id: DERObjectID) -> Bool {
+        if let objectIdentifier = child(at: 0, as: DERObjectIdentifier.self) {
+            if objectIdentifier.objectID == id {
+                return true
+            }
+        }
+        return false
+    }
 }
 
 extension DERSequence {

@@ -8,7 +8,7 @@ struct ObjectIdentifierPane: View {
     let objectIdentifier: DERObjectIdentifier
 
     var body: some View {
-        NodePaneHeader(node: node)
+        InspectorPaneHeader(inspectable: node)
         InspectorGrid {
             InspectorSectionHeader("Values")
             GridRow {
@@ -18,6 +18,7 @@ struct ObjectIdentifierPane: View {
                     url: URL(string: "http://oid-info.com/get/\(objectIdentifier.objectID.string)")
                 )
             }
+            InspectorDivider()
         }
     }
 }

@@ -211,76 +211,28 @@ struct ProvisioningProfiles: View {
             UTF8StringPane(node: node, utf8String: utf8String)
 
         case .unknown:
-            UnknownPane(node: node)
+            UnknownPane(inspectable: node)
         }
     }
 
     @ViewBuilder private func inspectData(of node: DERNode, data: Data) -> some View {
-        RawDataPane(node: node, data: data)
+        RawDataPane(inspectable: node, data: data)
     }
 
     @ViewBuilder private func inspectSemanticProperties(of node: SemanticNode) -> some View {
-        Text(node.type)
-    }
-}
-
-struct NodePaneHeader: View {
-
-    let node: DERNode
-
-    var body: some View {
-        VStack(spacing: 0) {
-            Divider()
-
-            ViewThatFits {
-
-                HStack(spacing: 0) {
-                    Image(systemName: node.systemIcon)
-                        .fontWeight(.medium)
-                        .foregroundStyle(node.iconColor)
-                        .padding(.trailing, 4)
-                    Text(node.type)
-                        .font(.title3)
-                        .fontWeight(.bold)
-                        .foregroundStyle(.primary)
-                        .truncationMode(.tail)
-                        .lineLimit(1)
-                    Spacer()
-                    Text(.init(node.description))
-                        .foregroundStyle(.secondary)
-                        .opacity(0.6)
-                        .lineLimit(1)
-                }
-                .padding(.horizontal, 16)
-                .padding(.vertical)
-
-                VStack(spacing: 0) {
-                    HStack(spacing: 0) {
-                        Image(systemName: node.systemIcon)
-                            .fontWeight(.medium)
-                            .foregroundStyle(node.iconColor)
-                            .padding(.trailing, 4)
-                        Text(node.type)
-                            .font(.title3)
-                            .fontWeight(.bold)
-                            .foregroundStyle(.primary)
-                            .truncationMode(.tail)
-                            .lineLimit(1)
-                        Spacer()
-                    }
-                    HStack {
-                        Text(.init(node.description))
-                            .foregroundStyle(.secondary)
-                            .opacity(0.6)
-                        Spacer()
-                    }
-                    .padding(.top, 8)
-                }
-                .padding(.horizontal, 16)
-                .padding(.vertical)
-            }
-
-            Divider()
+        switch node {
+        case .pkcs7SignedData:
+            UnknownPane(inspectable: node)
+        case .pkcs7Data:
+            UnknownPane(inspectable: node)
+        case .profilePlist(let plist):
+            ProfilePlistPane(node: node, plist: plist.profilePlist)
+        case .entitlements(let entitlements):
+            EntitlementsPane(node: node, entitlements: entitlements.entitlements)
+        case .developerCertificates(_):
+            UnknownPane(inspectable: node)
+        case .developerCertificate(let certificate):
+            DeveloperCertificatePane(inspectable: node, certificate: certificate.certificate)
         }
     }
 }

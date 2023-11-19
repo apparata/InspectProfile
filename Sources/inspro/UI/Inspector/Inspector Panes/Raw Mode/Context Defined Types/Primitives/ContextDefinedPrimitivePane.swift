@@ -8,7 +8,7 @@ struct ContextDefinedPrimitivePane: View {
     let contextDefinedPrimitive: DERContextDefinedPrimitive
 
     var body: some View {
-        NodePaneHeader(node: node)
-        InspectorHexDump(node: node, data: contextDefinedPrimitive.primitive)
+        InspectorPaneHeader(inspectable: node)
+        InspectorHexDump(data: contextDefinedPrimitive.primitive)
     }
 }

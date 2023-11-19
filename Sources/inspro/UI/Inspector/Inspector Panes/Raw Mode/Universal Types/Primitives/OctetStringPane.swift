@@ -8,7 +8,7 @@ struct OctetStringPane: View {
     let octetString: DEROctetString
 
     var body: some View {
-        NodePaneHeader(node: node)
-        InspectorHexDump(node: node, data: octetString.value)
+        InspectorPaneHeader(inspectable: node)
+        InspectorHexDump(data: octetString.value)
     }
 }

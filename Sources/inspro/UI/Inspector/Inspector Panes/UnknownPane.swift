@@ -3,10 +3,10 @@ import InspectProfile
 
 struct UnknownPane: View {
 
-    let node: DERNode
+    let inspectable: any Inspectable
 
     var body: some View {
-        NodePaneHeader(node: node)
+        InspectorPaneHeader(inspectable: inspectable)
         InspectorGrid {
             EmptyView()
         }

@@ -3,8 +3,6 @@ import InspectProfile
 
 struct InspectorHexDump: View {
 
-    private let node: DERNode
-
     private let data: Data
 
     @State private var string: String = ""
@@ -13,8 +11,7 @@ struct InspectorHexDump: View {
 
     @State private var isPresentingExporter: Bool = false
 
-    init(node: DERNode, data: Data) {
-        self.node = node
+    init(data: Data) {
         self.data = data
     }
 
@@ -67,7 +64,7 @@ struct InspectorHexDump: View {
                     ProgressView()
                 }
             }
-            .task(id: node.id) {
+            .task(id: data) {
                 self.string = ""
                 Task.detached {
                     let string = hexDump(data, bytesPerRow: 8)

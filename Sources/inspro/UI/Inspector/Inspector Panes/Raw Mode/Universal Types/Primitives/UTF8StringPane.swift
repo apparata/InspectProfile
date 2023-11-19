@@ -8,7 +8,7 @@ struct UTF8StringPane: View {
     let utf8String: DERUTF8String
 
     var body: some View {
-        NodePaneHeader(node: node)
+        InspectorPaneHeader(inspectable: node)
         InspectorGrid {
             EmptyView()
         }

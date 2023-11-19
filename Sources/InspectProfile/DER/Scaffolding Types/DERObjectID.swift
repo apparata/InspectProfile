@@ -36,13 +36,12 @@ public struct DERObjectID: Codable, Hashable, Equatable, CustomStringConvertible
     }
 
     private static let knownIDs: [String: DERObjectID] = [
-        SignedDataNode.objectID,
+        PKCS7SignedDataNode.objectID,
+        PKCS7DataNode.objectID,
         DERObjectID("0.9.2342.19200300.100.1.1", name: "\"uid\" LDAP attribute type: User shortname or userid"),
         DERObjectID("1.2.840.113549.1.1.1", name: "PKCS#1: RSA Encryption"),
         DERObjectID("1.2.840.113549.1.1.5", name: "PKCS#1: SHA-1 with RSA Signature"),
         DERObjectID("1.2.840.113549.1.1.11", name: "PKCS#1: SHA-256 with RSA Encryption"),
-        DERObjectID("1.2.840.113549.1.7.1", name: "PKCS#7: Data"),
-        DERObjectID("1.2.840.113549.1.7.2", name: "PKCS#7: Signed Data"),
         DERObjectID("1.2.840.113549.1.9.3", name: "PKCS#9: Content Type"),
         DERObjectID("1.2.840.113549.1.9.4", name: "PKCS#9: Message Digest"),
         DERObjectID("1.2.840.113549.1.9.5", name: "PKCS#9: Signing Time"),

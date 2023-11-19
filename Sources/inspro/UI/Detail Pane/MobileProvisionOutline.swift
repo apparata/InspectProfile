@@ -15,27 +15,43 @@ struct MobileProvisionOutline: View {
 
     var body: some View {
         VStack {
-            switch outlineMode {
-            case .raw:
-                List(profile.nodes, children: \.children, selection: $selectedNode) { node in
-                    entry(for: node)
+            ZStack {
+                VStack {
+                    ContentUnavailableView(
+                        "No Semantics",
+                        systemImage: "exclamationmark.triangle",
+                        description: Text("The DER structure of this file was not recognized.")
+                    )
                 }
-                .listStyle(.sidebar)
-                .scrollContentBackground(.hidden)
-            case .semantic where profile.semanticNodes.isEmpty:
-                ContentUnavailableView(
-                    "No Semantics",
-                    systemImage: "exclamationmark.triangle",
-                    description: Text("The DER structure of this file was not recognized.")
-                )
-            case .semantic:
-                List(profile.semanticNodes, children: \.children, selection: $selectedSemanticNode) { semanticNode in
-                    entry(for: semanticNode)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(.background)
+                .zIndex(outlineMode == .semantic && profile.semanticNodes.isEmpty ? 2 : 1)
+
+                VStack {
+                    List(profile.semanticNodes, children: \.children, selection: $selectedSemanticNode) { semanticNode in
+                        entry(for: semanticNode)
+                    }
+                    .listStyle(.sidebar)
+                    .scrollContentBackground(.hidden)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
-                .listStyle(.sidebar)
-                .scrollContentBackground(.hidden)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(.background)
+                .zIndex(outlineMode == .semantic && !profile.semanticNodes.isEmpty ? 2 : 1)
+
+                VStack {
+                    List(profile.nodes, children: \.children, selection: $selectedNode) { node in
+                        entry(for: node)
+                    }
+                    .listStyle(.sidebar)
+                    .scrollContentBackground(.hidden)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(.background)
+                .zIndex(outlineMode == .raw ? 2 : 0)
             }
         }
+        .accentColor(.gray)
         .environment(\.dynamicTypeSize, .xxLarge)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .navigationTitle(profile.url?.lastPathComponent ?? profile.name)

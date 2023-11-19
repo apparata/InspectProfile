@@ -1,7 +1,7 @@
 import SwiftUI
 import InspectProfile
 
-extension DERNode {
+extension DERNode: Inspectable {
     var systemIcon: String {
         switch self {
         case .contextDefinedConstructed: return "questionmark.folder"

@@ -10,6 +10,7 @@ struct InspectorTextField: View {
 
     var body: some View {
         Text(.init(string))
+            .lineLimit(1)
             .frame(minWidth: 100, maxWidth: .infinity, alignment: .leading)
             .padding(.vertical, 4)
             .padding(.horizontal, 8)

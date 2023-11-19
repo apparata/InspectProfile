@@ -35,6 +35,34 @@ extension DERConstructed {
     public var children: [DERNode] {
         return []
     }
+
+    public func child<T: DERNodeType>(at index: Int, as type: T.Type) -> T? {
+        guard let child = children.node(at: index) else {
+            return nil
+        }
+        return child.node as? T
+    }
+
+    public subscript<T: DERNodeType>(_ index: Int, as type: T.Type) -> T? {
+        child(at: index, as: type)
+    }
+}
+
+// MARK: - [DERNode]
+
+extension [DERNode] {
+    var second: DERNode? { node(at: 2) }
+    var third: DERNode? { node(at: 3) }
+    var fourth: DERNode? { node(at: 4) }
+    var fifth: DERNode? { node(at: 5) }
+    var sixth: DERNode? { node(at: 6) }
+
+    func node(at index: Int) -> DERNode? {
+        guard count > index else {
+            return nil
+        }
+        return self[index]
+    }
 }
 
 // MARK: DERNodeTag
@@ -142,5 +170,25 @@ public enum DERNode: Identifiable, CustomStringConvertible, Codable, Hashable {
         } else {
             return nil
         }
+    }
+
+    public func isObject(_ objectID: DERObjectID) -> Bool {
+        guard case .sequence(let sequence) = self else {
+            return false
+        }
+        return sequence.isObject(objectID)
+    }
+
+    public subscript<T: DERNodeType>(_ index: Int, as type: T.Type) -> T? {
+        guard let children else {
+            return nil
+        }
+        guard let child = children.node(at: index) else {
+            return nil
+        }
+        guard let node = child.node as? T else {
+            return nil
+        }
+        return node
     }
 }
