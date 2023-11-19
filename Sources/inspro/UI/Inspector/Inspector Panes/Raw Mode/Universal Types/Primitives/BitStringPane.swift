@@ -9,8 +9,6 @@ struct BitStringPane: View {
 
     @State private var string: String = ""
 
-    @Environment(\.openWindow) private var openWindow
-
     var body: some View {
         InspectorPaneHeader(inspectable: node)
         InspectorHexDump(data: bitString.value)

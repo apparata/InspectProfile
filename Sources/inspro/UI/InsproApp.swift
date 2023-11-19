@@ -29,7 +29,7 @@ struct InsproApp: App {
             AppCommands()
         }
 
-        WindowGroup(for: Data.self) { data in
+        WindowGroup(id: "hexdump", for: Data.self) { data in
             if let data = data.wrappedValue {
                 HexDump(data: data)
                     .frame(minWidth: 562, maxWidth: 562,

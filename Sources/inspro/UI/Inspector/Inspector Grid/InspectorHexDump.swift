@@ -46,7 +46,7 @@ struct InspectorHexDump: View {
                     }
 
                     Button {
-                        openWindow(value: data)
+                        openWindow(id: "hexdump", value: data)
                     } label: {
                         VStack {
                             Image(systemName: "pip.enter")
