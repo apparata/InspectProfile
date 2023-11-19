@@ -5,6 +5,19 @@ import SystemKit
 
 public class InspectProfile {
 
+    public static func inspectProfile(name: String, data: Data) throws -> Profile {
+        let parser = DERParser(data: data)
+        let nodes = try parser.parse()
+        let semanticNodes = try Semantics().processNodes(nodes)
+        return Profile(
+            name: name,
+            url: nil,
+            data: data,
+            nodes: nodes,
+            semanticNodes: semanticNodes
+        )
+    }
+
 	public static func inspectProfile(at inputPath: String) throws -> Profile {
         let path = SystemKit.Path(inputPath)
         let data = try Data(contentsOf: path.url)

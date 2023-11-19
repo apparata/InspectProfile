@@ -9,6 +9,6 @@ struct OctetStringPane: View {
 
     var body: some View {
         InspectorPaneHeader(inspectable: node)
-        InspectorHexDump(data: octetString.value)
+        InspectorHexDump(title: node.type, data: octetString.value)
     }
 }

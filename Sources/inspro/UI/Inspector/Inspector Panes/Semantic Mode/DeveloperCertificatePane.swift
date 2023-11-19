@@ -9,6 +9,6 @@ struct DeveloperCertificatePane: View {
 
     var body: some View {
         InspectorPaneHeader(inspectable: inspectable)
-        InspectorHexDump(data: certificate.data)
+        InspectorHexDump(title: inspectable.description, data: certificate.data)
     }
 }

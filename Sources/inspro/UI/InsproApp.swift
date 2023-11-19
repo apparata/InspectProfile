@@ -19,25 +19,9 @@ struct InsproApp: App {
     }
 
     var body: some Scene {
-        WindowGroup {
-            ProvisioningProfiles()
-                .frame(minWidth: 400, maxWidth: .infinity,
-                       minHeight: 300, maxHeight: .infinity)
-        }
-        .windowResizability(.automatic)
-        .commands {
-            AppCommands()
-        }
-
-        WindowGroup(id: "hexdump", for: Data.self) { data in
-            if let data = data.wrappedValue {
-                HexDump(data: data)
-                    .frame(minWidth: 562, maxWidth: 562,
-                           minHeight: 600, maxHeight: .infinity)
-                    .navigationTitle("\(data.count) bytes")
-            }
-        }
-        .windowResizability(.contentSize)
+        ProfilesWindow()
+        NodeTreeWindow()
+        HexDumpWindow()
     }
 }
 

@@ -9,6 +9,6 @@ struct RawDataPane: View {
 
     var body: some View {
         InspectorPaneHeader(inspectable: inspectable)
-        InspectorHexDump(data: data)
+        InspectorHexDump(title: inspectable.type, data: data)
     }
 }

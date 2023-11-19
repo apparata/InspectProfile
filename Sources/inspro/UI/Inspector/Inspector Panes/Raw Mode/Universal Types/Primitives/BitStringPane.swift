@@ -11,6 +11,6 @@ struct BitStringPane: View {
 
     var body: some View {
         InspectorPaneHeader(inspectable: node)
-        InspectorHexDump(data: bitString.value)
+        InspectorHexDump(title: node.type, data: bitString.value)
     }
 }

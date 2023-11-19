@@ -3,6 +3,8 @@ import InspectProfile
 
 struct InspectorHexDump: View {
 
+    private let title: String
+
     private let data: Data
 
     @State private var string: String = ""
@@ -11,7 +13,8 @@ struct InspectorHexDump: View {
 
     @State private var isPresentingExporter: Bool = false
 
-    init(data: Data) {
+    init(title: String, data: Data) {
+        self.title = title
         self.data = data
     }
 
@@ -46,7 +49,11 @@ struct InspectorHexDump: View {
                     }
 
                     Button {
-                        openWindow(id: "hexdump", value: data)
+                        let windowData = WindowData(
+                            title: title,
+                            data: data
+                        )
+                        openWindow(id: HexDumpWindow.windowID, value: windowData)
                     } label: {
                         VStack {
                             Image(systemName: "pip.enter")
@@ -56,6 +63,23 @@ struct InspectorHexDump: View {
                         .cornerRadius(8)
                     }
                     .buttonStyle(.plain)
+
+                    Button {
+                        let windowData = WindowData(
+                            title: title,
+                            data: data
+                        )
+                        openWindow(id: NodeTreeWindow.windowID, value: windowData)
+                    } label: {
+                        VStack {
+                            Image(systemName: "macwindow.badge.plus")
+                        }
+                        .frame(width: 32, height: 32)
+                        .background(.thickMaterial)
+                        .cornerRadius(8)
+                    }
+                    .buttonStyle(.plain)
+
                 }
                 .padding()
             }

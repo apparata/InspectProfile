@@ -9,6 +9,6 @@ struct ContextDefinedPrimitivePane: View {
 
     var body: some View {
         InspectorPaneHeader(inspectable: node)
-        InspectorHexDump(data: contextDefinedPrimitive.primitive)
+        InspectorHexDump(title: node.type, data: contextDefinedPrimitive.primitive)
     }
 }

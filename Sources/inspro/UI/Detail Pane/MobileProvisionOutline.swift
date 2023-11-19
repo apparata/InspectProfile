@@ -64,7 +64,7 @@ struct MobileProvisionOutline: View {
                         Label("Open in Finder", systemImage: "folder")
                     }
                 } else {
-                    Image(systemName: "doc.badge.gearshape")
+                    Image(systemName: "list.bullet.indent")
                 }
             }
             ToolbarItem {

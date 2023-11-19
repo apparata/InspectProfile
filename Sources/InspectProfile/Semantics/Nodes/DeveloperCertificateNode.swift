@@ -4,10 +4,10 @@ public struct DeveloperCertificateNode: NodeType {
 
     public var id: UUID = UUID()
 
-    public var type: String = "Developer Certificates"
+    public var type: String = "Developer Certificate"
 
     public var description: String {
-        ""
+        certificate.name
     }
 
     public var children: [Node]?
