@@ -46,12 +46,12 @@ extension DERPrimitive {
 
 // MARK: - DERConstructed
 
-public protocol DERConstructed: DERNodeType {
+public protocol DERConstructed: DERNodeType, CastableElement {
 }
 
 extension DERConstructed {
 
-    public func child<T: DERNodeType>(at index: Int, as type: T.Type) -> T? {
+    public func node<T: DERNodeType>(at index: Int, as type: T.Type) -> T? {
         guard let child = children?.node(at: index) else {
             return nil
         }
@@ -59,18 +59,55 @@ extension DERConstructed {
     }
 
     public subscript<T: DERNodeType>(_ index: Int, as type: T.Type) -> T? {
-        child(at: index, as: type)
+        node(at: index, as: type)
+    }
+}
+
+// MARK: - NodeCaster
+
+struct NodeCaster {
+
+    var cast: (Node) -> (any NodeType)?
+
+    init<T: NodeType>(_ type: T.Type) {
+        cast = { value in
+            value.node as? T
+        }
+    }
+}
+
+// MARK: - NodeAt
+
+public struct NodeAt {
+    let index: Int
+    let caster: NodeCaster
+    let validate: (any NodeType) -> Bool
+
+    public init<T: NodeType>(_ index: Int, as type: T.Type, validate: ((T) -> Bool)? = nil) {
+        self.index = index
+        self.caster = NodeCaster(type)
+        self.validate = { nodeType in
+            guard let castType = nodeType as? T else {
+                return false
+            }
+            return validate?(castType) ?? true
+        }
     }
 }
 
 // MARK: - [Node]
 
-extension [Node] {
-    var second: Node? { node(at: 2) }
-    var third: Node? { node(at: 3) }
-    var fourth: Node? { node(at: 4) }
-    var fifth: Node? { node(at: 5) }
-    var sixth: Node? { node(at: 6) }
+extension [Node]: CastableElement {
+
+    var second: Node? { node(at: 1) }
+    var third: Node? { node(at: 2) }
+    var fourth: Node? { node(at: 3) }
+    var fifth: Node? { node(at: 4) }
+    var sixth: Node? { node(at: 5) }
+    var seventh: Node? { node(at: 6) }
+    var eighth: Node? { node(at: 7) }
+    var ninth: Node? { node(at: 8) }
+    var tenth: Node? { node(at: 9) }
 
     func node(at index: Int) -> Node? {
         guard count > index else {
@@ -78,6 +115,52 @@ extension [Node] {
         }
         return self[index]
     }
+
+    public func node<T: DERNodeType>(at index: Int, as type: T.Type) -> T? {
+        guard let child = node(at: index) else {
+            return nil
+        }
+        return child.node as? T
+    }
+
+    public subscript<T: DERNodeType>(_ index: Int, as type: T.Type) -> T? {
+        node(at: index, as: type)
+    }
+
+    public func extract<T: NodeType>(at path: [NodeAt], as resultType: T.Type) -> T? {
+        var path = path
+        var array: [Node] = self
+        while !path.isEmpty {
+            let level = path.removeFirst()
+            guard let levelNode = array.node(at: level.index) else {
+                return nil
+            }
+            guard let nodeType = level.caster.cast(levelNode) else {
+                return nil
+            }
+            if path.isEmpty {
+                guard let result = nodeType as? T else {
+                    return nil
+                }
+                guard level.validate(result) else {
+                    return nil
+                }
+                return result
+            }
+            guard let children = nodeType.children else {
+                return nil
+            }
+            array = children
+        }
+        return nil
+    }
+}
+
+// MARK: - CastableElement
+
+public protocol CastableElement {
+    func node<T: DERNodeType>(at index: Int, as type: T.Type) -> T?
+    subscript<T: DERNodeType>(_ index: Int, as type: T.Type) -> T? { get }
 }
 
 // MARK: Node

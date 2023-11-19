@@ -19,10 +19,7 @@ import Foundation
 /// ```
 public struct PKCS7SignedDataNode: NodeType {
 
-    public static let objectID = DERObjectID(
-        "1.2.840.113549.1.7.2",
-        name: "PKCS#7: Signed Data"
-    )
+    public static let objectID: DERObjectID = .PKCS7.signedData
 
     public var id: UUID = UUID()
 

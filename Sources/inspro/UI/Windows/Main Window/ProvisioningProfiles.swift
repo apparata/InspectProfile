@@ -47,8 +47,13 @@ struct ProvisioningProfiles: View {
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .onChange(of: selectedProfile) { _, profile in
+            .onChange(of: selectedProfile) { _, _ in
                 selectedNode = nil
+                selectedSemanticNode = nil
+            }
+            .onChange(of: outlineMode) { _, _ in
+                selectedNode = nil
+                selectedSemanticNode = nil
             }
             .toolbar {
                 ToolbarItem {

@@ -18,7 +18,7 @@ public struct DERSequence: DERConstructed {
     }
 
     public func isObject(_ id: DERObjectID) -> Bool {
-        if let objectIdentifier = child(at: 0, as: DERObjectIdentifier.self) {
+        if let objectIdentifier = node(at: 0, as: DERObjectIdentifier.self) {
             if objectIdentifier.objectID == id {
                 return true
             }

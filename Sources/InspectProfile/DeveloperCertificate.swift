@@ -22,29 +22,18 @@ public struct DeveloperCertificate: Codable, Hashable {
     }
 
     private static func extractName(from nodes: [Node]) -> String {
-        guard let sequence0 = nodes.first?.node as? DERSequence else {
-            return "Unknown"
-        }
-        guard let sequence1 = sequence0[0, as: DERSequence.self] else {
-            return "Unknown"
-        }
-        guard let sequence2 = sequence1[5, as: DERSequence.self] else {
-            return "Unknown"
-        }
-        guard let set = sequence2[1, as: DERSet.self] else {
-            return "Unknown"
-        }
-        guard let sequence3 = set[0, as: DERSequence.self] else {
-            return "Unknown"
-        }
-        let commonNameID = DERObjectID("2.5.4.3", name: "Attribute Type: Common Name")
-        guard sequence3.isObject(commonNameID) else {
-            return "Unknown"
-        }
-        guard let string = sequence3[1, as: DERUTF8String.self] else {
-            return "Unknown"
-        }
-        let value = string.value
-        return value
+
+        let name = nodes.extract(at: [
+            NodeAt(0, as: DERSequence.self),
+            NodeAt(0, as: DERSequence.self),
+            NodeAt(5, as: DERSequence.self),
+            NodeAt(1, as: DERSet.self),
+            NodeAt(0, as: DERSequence.self) { sequence in
+                sequence.isObject(.AttributeType.commonName)
+            },
+            NodeAt(1, as: DERUTF8String.self)
+        ], as: DERUTF8String.self)?.value
+
+        return name ?? "N/A"
     }
 }
