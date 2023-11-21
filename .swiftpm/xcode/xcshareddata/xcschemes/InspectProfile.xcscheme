@@ -67,11 +67,11 @@
       <CommandLineArguments>
          <CommandLineArgument
             argument = "inspect"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "/Users/martinjohannesson/Downloads/HM_FDS_Dev.mobileprovision"
-            isEnabled = "YES">
+            argument = "&quot;/Users/martinjohannesson/Downloads/Styles Dev.mobileprovision&quot;"
+            isEnabled = "NO">
          </CommandLineArgument>
       </CommandLineArguments>
    </LaunchAction>
