@@ -47,7 +47,7 @@ public class DERParser {
         case .universal:
             try parseUniversalType(tag: tag, length: length)
         case .application:
-            throw DERError.notImplemented
+            try parseApplicationType(tag: tag, length: length)
         case .contextDefined:
             try parseContextDefinedType(tag: tag, length: length)
         case .private:
@@ -137,7 +137,15 @@ public class DERParser {
             return .unknown(DERUnknown(tag: tag, range: range))
         }
     }
-    
+
+    // MARK: Parse Application Type
+
+    private func parseApplicationType(tag: DERTag, length: Int) throws -> Node {
+        // With some luck, application types are just
+        // universal types with a different class.
+        try parseUniversalType(tag: tag, length: length)
+    }
+
     // MARK: Parse Context Defined Type
     
     private func parseContextDefinedType(tag: DERTag, length: Int) throws -> Node {
@@ -160,7 +168,6 @@ public class DERParser {
             let primitive = try scanner.scanData(length: length)
             return .contextDefinedPrimitive(DERContextDefinedPrimitive(tag: tag, primitive: primitive, range: range))
         }
-        
     }
     
     // MARK: Parse Tag
